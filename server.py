@@ -9,7 +9,7 @@ from flask_socketio import SocketIO, send, emit
 from werkzeug.utils import secure_filename
 import socket
 import pickle
-from blockchain_module import Blockchain
+from blockchain import Blockchain  # ✅ Correct import
 import requests
 from flask import session # Add this at the top
 from flask import request  # Rename import
