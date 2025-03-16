@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: flask-backend
+    env: python
+    repo: https://github.com/Abdullah5755/blue-lock
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        value: sqlite:///users.db
