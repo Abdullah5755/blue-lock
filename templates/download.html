@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<head>
+	<title>DOWNLOAD FILE</title>
+	<link rel="stylesheet" href="static/css/handle_file.css">
+	<link rel="stylesheet" href="static/vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap">
+	<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+	<!-- ✅ Flash Messages (Placed at the top inside the body) -->
+	{% with messages = messages if messages else get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+    {% for category, message in messages|unique %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+   {% endwith %}
+
+
+	<div class="grandParentContaniner">
+		<div class="parentContainer">
+			<form class="file-frm" method="post" action="/retrieve_file">
+				<h3>Download a file</h3>
+				<br><br>
+
+				<div class="form-group">
+					<label>Key :</label>
+					<input type="password" name="file_key" class="form-control" placeholder="Key shared by uploader" required>
+				</div>
+				<br>
+				<div class="form-group">
+					<label>File hash :</label>
+					<input type="text" name="file_hash" class="form-control" placeholder="File hash" required>
+				</div>				
+				<br>
+
+				<button type="submit" class="send-btn">Submit</button><br><br>
+
+				<!-- ✅ Fix: Corrected button syntax -->
+				<a href="{{ url_for('connect_blockchain') }}">
+					<button type="button" class="view-chain">View chain</button>
+				</a>
+
+			</form>
+		</div>
+	</div>
+
+</body>
+</html>

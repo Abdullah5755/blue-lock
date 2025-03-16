@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Lock Storage - Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0d1b2a, #1e3a8a); /* Same as Login Page */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Register Box Styling */
+        .register-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .register-box {
+            background: #111827;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .register-box h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #1e90ff; /* Neon Blue */
+        }
+
+        /* Input Fields */
+        .form-group label {
+            font-weight: 500;
+            color: #1e90ff; /* Neon Blue */
+        }
+
+        .form-control {
+            border-radius: 5px;
+            padding: 10px;
+            border: 2px solid #1e90ff;
+            background: #1f2937;
+            color: white;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .form-control::placeholder {
+            color: #b0c4de;
+        }
+
+        .form-control:focus {
+            border-color: #00c3ff;
+            box-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+            outline: none;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #1e90ff; /* Neon Blue */
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: 0.3s;
+            width: 100%;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0077cc; /* Darker Blue */
+        }
+
+        /* Flash Messages */
+        .alert {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 14px;
+            background: #1e90ff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* Login Link */
+        .login-link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #00c3ff; /* Brighter Neon Blue */
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+            text-shadow: 0 0 10px rgba(0, 195, 255, 1);
+            font-size: 16px;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+            color: #00e6ff;
+        }
+        .login-link {
+    color: white !important;  /* Changes "Don't have an account?" to white */
+}
+    </style>
+</head>
+<body>
+
+<div class="register-container">
+    <div class="register-box">
+        <h2>Blue Lock Storage</h2>
+
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('auth.register') }}" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Choose a username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Create a password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+
+            <p class="login-link">Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

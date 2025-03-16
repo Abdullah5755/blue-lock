@@ -1,0 +1,24 @@
+<!-- main_server/templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}File Sharing{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('upload') }}">Upload</a>
+        <a href="{{ url_for('download') }}">Download</a>
+        {% if session['role'] == 'admin' %}
+            <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+        {% endif %}
+        <a href="{{ url_for('auth.login') }}">Login</a>
+    </nav>
+    <hr>
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
