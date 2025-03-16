@@ -17,7 +17,7 @@ class Blockchain:
         # self.receiver = [] ##########
         self.create_block(proof = 1, previous_hash = '0' , sender = 'N.A' , receiver = 'N.A' , file_hash = 'N.A') ##########
         self.nodes = set()
-        self.nodes.add("127.0.0.1:5111")
+        self.nodes.add("https://blue-lock-1.onrender.com")
     
     def create_block(self, proof, previous_hash, sender, receiver, file_hash):
         block = {'index': len(self.chain) + 1,
