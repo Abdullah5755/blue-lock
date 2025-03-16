@@ -9,7 +9,7 @@ from flask_socketio import SocketIO, send, emit
 from werkzeug.utils import secure_filename
 import socket
 import pickle
-from blockchain import Blockchain  # ✅ Correct import
+import blockchain 
 import requests
 from flask import session # Add this at the top
 from flask import request  # Rename import
@@ -51,7 +51,7 @@ app.config['SESSION_KEY_PREFIX'] = 'blockchain_'  # Prefix session keys
 Session(app)  # Initialize session
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 socketio = SocketIO(app)
-blockchain = Blockchain()
+blockchain_instance = blockchain.Blockchain() 
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
