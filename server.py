@@ -221,52 +221,68 @@ def reject_request(request_id):
 def entity_too_large(e):
     return render_template('upload.html' , message = "Requested Entity Too Large!")
 
+import os
+import requests
+import ipfshttpclient
+from flask import Flask, request, render_template, flash, redirect, url_for
+from werkzeug.utils import secure_filename
+from blockchain import blockchain
+
+app.config['UPLOAD_FOLDER'] = 'uploads'  # ✅ Ensure the folder exists
+
 @app.route('/add_file', methods=['POST'])
 def add_file():
-    
+    # Ensure blockchain synchronization
     is_chain_replaced = blockchain.replace_chain()
+    print("Blockchain synchronized:", "Updated" if is_chain_replaced else "No change")
 
-    if is_chain_replaced:
-        print('The nodes had different chains so the chain was replaced by the longest one.')
-    else:
-        print('All good. The chain is the largest one.')
+    # Check if file was uploaded
+    if 'file' not in request.files:
+        return render_template('upload.html', message="No file part in request!")
 
-    if request.method == 'POST':
-        error_flag = True
-        if 'file' not in request.files:
-            message = 'No file part'
-        else:
-            user_file = request.files['file']
-            if user_file.filename == '':
-                message = 'No file selected for uploading'
+    user_file = request.files['file']
+    if user_file.filename == '':
+        return render_template('upload.html', message="No file selected for uploading!")
 
-            if user_file and allowed_file(user_file.filename):
-                error_flag = False
-                filename = secure_filename(user_file.filename)
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                user_file.save(file_path)
-                append_file_extension(user_file, file_path)
-                sender = request.form['sender_name']
-                receiver = request.form['receiver_name']
-                file_key = request.form['file_key']
+    # Check allowed file types
+    allowed_extensions = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
-                try:
-                    hashed_output1 = hash_user_file(file_path, file_key)
-                    index = blockchain.add_file(sender, receiver, hashed_output1)
-                except Exception as err:
-                    message = str(err)
-                    error_flag = True
-                    if "ConnectionError:" in message:
-                        message = "Gateway down or bad Internet!"
+    if not allowed_file(user_file.filename):
+        return render_template('upload.html', message="Allowed file types: txt, pdf, png, jpg, jpeg, gif")
 
-            else:
-                error_flag = True
-                message = 'Allowed file types are txt, pdf, png, jpg, jpeg, gif'
-    
-        if error_flag == True:
-            return render_template('upload.html' , message = message)
-        else:
-            return render_template('upload.html' , message = "File succesfully uploaded")
+    # Save file locally
+    filename = secure_filename(user_file.filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    user_file.save(file_path)
+
+    # Ensure sender and receiver fields are provided
+    sender = request.form.get('sender_name')
+    receiver = request.form.get('receiver_name')
+    file_key = request.form.get('file_key')
+
+    if not sender or not receiver or not file_key:
+        return render_template('upload.html', message="All fields are required!")
+
+    try:
+        # Hash file (You need to define hash_user_file in your project)
+        hashed_output = hash_user_file(file_path, file_key)
+
+        # Upload to IPFS (Use Infura)
+        client = ipfshttpclient.connect('/dns4/ipfs.infura.io/tcp/5001/https')  # ✅ Ensure IPFS connection
+        res = client.add(file_path)
+        ipfs_hash = res['Hash']
+
+        # Add file hash to blockchain
+        index = blockchain.add_file(sender, receiver, hashed_output)
+
+        return render_template('upload.html', message=f"File uploaded! IPFS Hash: {ipfs_hash}")
+
+    except Exception as e:
+        print("Upload Error:", str(e))
+        return render_template('upload.html', message=f"Error: {str(e)}")
+
 
 @app.route('/retrieve_file', methods=['POST'])
 def retrieve_file():
