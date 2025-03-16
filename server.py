@@ -75,7 +75,7 @@ def hash_user_file(user_file, file_key):
     encrypt_file(user_file, file_key)
     encrypted_file_path = user_file + ".aes"
     print("DEBUG: Connecting to IPFS...")
-    client = ipfshttpclient.connect('/ip4/127.0.0.1/tcp/5001')
+    client = ipfshttpclient.connect('/dns4/ipfs.infura.io/tcp/5001/https')
     print("DEBUG: Uploading file to IPFS:", encrypted_file_path)
     response = client.add(encrypted_file_path)
     print("DEBUG: IPFS Response:", response)
@@ -84,7 +84,7 @@ def hash_user_file(user_file, file_key):
     return file_hash
 
 def retrieve_from_hash(file_hash, file_key):
-    client = ipfshttpclient.connect('/ip4/127.0.0.1/tcp/5001')
+    client = ipfshttpclient.connect('/dns4/ipfs.infura.io/tcp/5001/https')
     file_content = client.cat(file_hash)
     file_path = os.path.join(app.config['DOWNLOAD_FOLDER'], file_hash)
     user_file = open(file_path, 'ab+')
@@ -328,4 +328,5 @@ def handle_disconnect():
     print(request)
 
 if __name__ == '__main__':
-    socketio.run(app, host='127.0.0.1', port=5111, debug=True)
+    socketio.run(app, host='0.0.0.0', port=10000, debug=False)
+

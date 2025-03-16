@@ -6,7 +6,8 @@ import os
 auth = Blueprint('auth', __name__)
 
 def get_db_connection():
-    DB_PATH = os.path.join(os.path.dirname(__file__), 'users.db')
+    DB_PATH = os.path.join(os.getcwd(), 'users.db')
+
     try:
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row

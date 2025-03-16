@@ -2,7 +2,8 @@ import sqlite3
 from werkzeug.security import generate_password_hash
 
 def create_database():
-    conn = sqlite3.connect('users.db')  # Ensure this is inside main_server
+    conn = sqlite3.connect(os.path.join(os.getcwd(), 'users.db'))
+  # Ensure this is inside main_server
     cursor = conn.cursor()
 
     cursor.execute('''
