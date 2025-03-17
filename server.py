@@ -9,7 +9,7 @@ from flask_socketio import SocketIO, send, emit
 from werkzeug.utils import secure_filename
 import socket
 import pickle
-import blockchain 
+from blockchain_logic import Blockchain  # ✅ Correct if using blockchain_logic.py
 import requests
 from flask import session # Add this at the top
 from flask import request  # Rename import
@@ -51,7 +51,8 @@ app.config['SESSION_KEY_PREFIX'] = 'blockchain_'  # Prefix session keys
 Session(app)  # Initialize session
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 socketio = SocketIO(app)
-blockchain_instance = blockchain.Blockchain() 
+blockchain_instance = Blockchain()  # ✅ Correct way to initialize
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -221,14 +222,6 @@ def reject_request(request_id):
 def entity_too_large(e):
     return render_template('upload.html' , message = "Requested Entity Too Large!")
 
-import os
-import requests
-import ipfshttpclient
-from flask import Flask, request, render_template, flash, redirect, url_for
-from werkzeug.utils import secure_filename
-from blockchain import blockchain
-
-app.config['UPLOAD_FOLDER'] = 'uploads'  # ✅ Ensure the folder exists
 
 @app.route('/add_file', methods=['POST'])
 def add_file():
